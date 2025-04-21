@@ -16,7 +16,7 @@ stages:
     jobs:
       - job: DockerBuild
         steps:
-          - task: Checkout@1  # Faz o checkout do código do repositório
+          - task: Checkout@1
 
           - task: Docker@2
             displayName: 'Build Docker Image'
