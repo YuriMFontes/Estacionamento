@@ -22,10 +22,10 @@ stages:
             displayName: 'Build Docker Image'
             inputs:
               command: build
-              Dockerfile: '**/Dockerfile'
-              repository: $(imageName)
+              Dockerfile: 'Dockerfile'  # Caminho correto do Dockerfile na raiz
+              buildContext: $(Build.SourcesDirectory)  # Define o diretório de contexto da build
               tags: |
-                $(Build.SourceBranchName)-$(Build.BuildId)
+                $(Build.SourceBranchName)-$(Build.BuildId)  # Tag da imagem com base no branch e ID da build
 
   - stage: Deploy
     displayName: "Deploy Application"
