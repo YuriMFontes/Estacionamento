@@ -6,7 +6,6 @@ trigger:
 
 variables:
   imageName: 'smartparking'
-  dockerRegistryServiceConnection: 'CONEXAO-DOCKER'  # Substitua pelo nome da sua conexão com Docker Registry (Azure ou DockerHub)
 
 pool:
   vmImage: 'ubuntu-latest'
@@ -28,26 +27,12 @@ stages:
               tags: |
                 $(Build.SourceBranchName)-$(Build.BuildId)
 
-  - stage: Deploy_Staging
-    displayName: "Deploy to Staging"
-    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))
-    dependsOn: Build
+  - stage: Deploy
+    displayName: "Deploy Application"
     jobs:
-      - job: DeployStaging
+      - job: Deploy
         steps:
           - script: |
-              echo "Fazendo deploy para o ambiente de STAGING..."
-              docker run -d -p 8081:8080 $(imageName):$(Build.SourceBranchName)-$(Build.BuildId)
-            displayName: "Rodar container Staging"
-
-  - stage: Deploy_Production
-    displayName: "Deploy to Production"
-    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
-    dependsOn: Build
-    jobs:
-      - job: DeployProduction
-        steps:
-          - script: |
-              echo "Fazendo deploy para PRODUÇÃO..."
+              echo "Iniciando deploy da aplicação..."
               docker run -d -p 8080:8080 $(imageName):$(Build.SourceBranchName)-$(Build.BuildId)
-            displayName: "Rodar container Produção"
+            displayName: "Rodar container"
