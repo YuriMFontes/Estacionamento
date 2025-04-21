@@ -24,8 +24,9 @@ stages:
               command: build
               Dockerfile: './Dockerfile'  # Caminho correto do Dockerfile na raiz
               buildContext: $(Build.SourcesDirectory)  # Define o diretório de contexto da build
+              repository: 'smartparking'  # Usando o nome fixo para a imagem
               tags: |
-                $(Build.SourceBranchName)-$(Build.BuildId)  # Tag da imagem com base no branch e ID da build
+                smartparking:$(Build.SourceBranchName)-$(Build.BuildId)  # Tag com o nome fixo da imagem
 
   - stage: Deploy
     displayName: "Deploy Application"
@@ -34,5 +35,5 @@ stages:
         steps:
           - script: |
               echo "Iniciando deploy da aplicação..."
-              docker run -d -p 8080:8080 $(imageName):$(Build.SourceBranchName)-$(Build.BuildId)
+              docker run -d -p 8080:8080 smartparking:$(Build.SourceBranchName)-$(Build.BuildId)
             displayName: "Rodar container"
