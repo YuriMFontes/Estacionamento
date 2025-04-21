@@ -1,22 +1,28 @@
-# Use uma imagem base do OpenJDK
-FROM openjdk:17-jdk-slim as build
-
-# Defina o diretório de trabalho no contêiner
+# Etapa 1: Build com Maven
+FROM maven:3.9.4-eclipse-temurin-17 AS build
 WORKDIR /app
 
-# Copie o arquivo JAR do seu projeto para o contêiner
-COPY target/smartparking-*.jar app.jar
+# Copia tudo pro container e faz o build
+COPY . .
+RUN mvn clean package -DskipTests
 
-# Exponha a porta que o Spring Boot vai rodar (geralmente 8080)
+# Etapa 2: Runtime com JDK leve
+FROM openjdk:17-jdk-slim
+WORKDIR /app
+
+# Copia o .jar do build
+COPY --from=build /app/target/smartparking-*.jar app.jar
+
+# Define variáveis de ambiente
+ENV SPRING_DATASOURCE_URL=jdbc:postgresql://smartparking-db:5432/smartparkingdb \
+    SPRING_DATASOURCE_USERNAME=postgres \
+    SPRING_DATASOURCE_PASSWORD=123456 \
+    SPRING_JPA_HIBERNATE_DDL_AUTO=update \
+    SPRING_JPA_SHOW_SQL=true \
+    SPRING_JPA_PROPERTIES_HIBERNATE_FORMAT_SQL=true
+
+# Exponha a porta da aplicação
 EXPOSE 8080
 
-# Comando para rodar a aplicação Spring Boot
+# Roda a aplicação
 ENTRYPOINT ["java", "-jar", "app.jar"]
-
-# Defina o ambiente para execução
-ENV SPRING_DATASOURCE_URL=jdbc:postgresql://smartparking-db:5432/smartparkingdb
-ENV SPRING_DATASOURCE_USERNAME=postgres
-ENV SPRING_DATASOURCE_PASSWORD=123456
-ENV SPRING_JPA_HIBERNATE_DDL_AUTO=update
-ENV SPRING_JPA_SHOW_SQL=true
-ENV SPRING_JPA_PROPERTIES_HIBERNATE_FORMAT_SQL=true
