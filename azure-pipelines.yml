@@ -8,7 +8,7 @@ variables:
   imageName: 'smartparking'
 
 pool:
-  name: 'default'  # pool local que você configurou
+  name: 'default'  # Pool local que você configurou
 
 stages:
   - stage: Build
@@ -36,7 +36,12 @@ stages:
         displayName: "Run Container"
         steps:
           - script: |
-              docker ps -a  # Verifica se o banco de dados está rodando
-              docker logs smartparking-db  # Checa os logs do container PostgreSQL
-            displayName: "Verificar banco de dados"
-
+              # Inicia o container se não estiver rodando
+              docker ps -a  # Verifica todos os containers, incluindo os parados
+              docker logs smartparking-db  # Exibe os logs do container PostgreSQL
+              # Verifica o status do container e tenta reiniciá-lo se necessário
+              if ! docker ps -q -f name=smartparking-db; then
+                echo "Container 'smartparking-db' não está em execução. Tentando reiniciar..."
+                docker start smartparking-db
+              fi
+            displayName: "Verificar banco de dados e logs"
