@@ -8,7 +8,7 @@ variables:
   imageName: 'smartparking'
 
 pool:
-  vmImage: 'ubuntu-latest'
+  name: 'default'  # pool local que você configurou
 
 stages:
   - stage: Build
@@ -23,7 +23,7 @@ stages:
             displayName: 'Build Docker Image'
             inputs:
               command: build
-              dockerfile: 'Dockerfile'  # Nome do Dockerfile (na raiz do projeto)
+              dockerfile: 'Dockerfile'
               buildContext: '$(Build.SourcesDirectory)'
               tags: |
                 $(imageName):$(Build.SourceBranchName)-$(Build.BuildId)
