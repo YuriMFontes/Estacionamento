@@ -1,11 +1,11 @@
-# Etapa 1: Build com Maven
-FROM maven:3.9.4-eclipse-temurin-17 AS build
+# Etapa 1: Build com Maven e Java 21
+FROM maven:3.9.4-eclipse-temurin-21 AS build
 WORKDIR /app
 COPY . .
 RUN mvn clean package -DskipTests
 
-# Etapa 2: Runtime com Java leve
-FROM openjdk:17-jdk-slim
+# Etapa 2: Runtime com Java 21
+FROM eclipse-temurin:21-jre
 WORKDIR /app
 COPY --from=build /app/target/*.jar app.jar
 
