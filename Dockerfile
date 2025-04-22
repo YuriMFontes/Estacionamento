@@ -17,7 +17,7 @@ FROM eclipse-temurin:21-jre AS runtime
 WORKDIR /app
 
 # Copia o arquivo .jar gerado pela etapa anterior para o container
-COPY --from=build /app/target/smartparking-app.jar app.jar
+COPY --from=build /app/target/smartparking-0.0.1-SNAPSHOT.jar app.jar
 
 # Configurações de variáveis de ambiente para conectar ao banco de dados
 ENV SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/smartparkingdb \
