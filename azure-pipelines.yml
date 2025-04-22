@@ -15,25 +15,27 @@ stages:
     displayName: "Build Docker Image"
     jobs:
       - job: DockerBuild
+        displayName: "Docker Build Job"
         steps:
-          - task: Checkout@1
+          - checkout: self
 
           - task: Docker@2
             displayName: 'Build Docker Image'
             inputs:
               command: build
-              Dockerfile: './Dockerfile'  # Caminho correto do Dockerfile na raiz
-              buildContext: $(Build.SourcesDirectory)  # Define o diretório de contexto da build
-              repository: 'smartparking'  # Usando o nome fixo para a imagem
+              dockerfile: 'Dockerfile'  # Nome do Dockerfile (na raiz do projeto)
+              buildContext: '$(Build.SourcesDirectory)'
               tags: |
-                smartparking:$(Build.SourceBranchName)-$(Build.BuildId)  # Tag com o nome fixo da imagem
+                $(imageName):$(Build.SourceBranchName)-$(Build.BuildId)
 
   - stage: Deploy
     displayName: "Deploy Application"
+    dependsOn: Build
     jobs:
       - job: Deploy
+        displayName: "Run Container"
         steps:
           - script: |
-              echo "Iniciando deploy da aplicação..."
-              docker run -d -p 8080:8080 smartparking:$(Build.SourceBranchName)-$(Build.BuildId)
+              echo "Iniciando deploy da aplicação localmente..."
+              docker run -d -p 8080:8080 $(imageName):$(Build.SourceBranchName)-$(Build.BuildId)
             displayName: "Rodar container"
