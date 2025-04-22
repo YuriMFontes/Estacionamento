@@ -36,12 +36,21 @@ stages:
         displayName: "Run Container"
         steps:
           - script: |
-              :: Inicia o container se não estiver rodando
-              docker ps -a  :: Verifica todos os containers, incluindo os parados
-              docker logs smartparking-db  :: Exibe os logs do container PostgreSQL
-              :: Verifica o status do container e tenta reiniciá-lo se necessário
-              if not docker ps -q -f name=smartparking-db (
-                echo Container 'smartparking-db' não está em execução. Tentando reiniciar...
-                docker start smartparking-db
+              echo Verificando containers existentes...
+              docker ps -a
+
+              echo Logs do banco de dados:
+              docker logs smartparking-db
+
+              echo Verificando se o container está rodando...
+              docker inspect -f "{{.State.Running}}" smartparking-db > status.txt 2>NUL
+
+              for /f %%i in (status.txt) do set STATUS=%%i
+
+              if "%STATUS%"=="false" (
+                  echo O container smartparking-db está parado. Iniciando...
+                  docker start smartparking-db
+              ) else (
+                  echo O container smartparking-db já está rodando.
               )
             displayName: "Verificar banco de dados e logs"
