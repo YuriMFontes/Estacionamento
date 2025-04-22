@@ -36,6 +36,7 @@ stages:
         displayName: "Run Container"
         steps:
           - script: |
-              echo "Iniciando deploy da aplicação localmente..."
-              docker run -d -p 8080:8080 $(imageName):$(Build.SourceBranchName)-$(Build.BuildId)
-            displayName: "Rodar container"
+              docker ps -a  # Verifica se o banco de dados está rodando
+              docker logs smartparking-db  # Checa os logs do container PostgreSQL
+            displayName: "Verificar banco de dados"
+

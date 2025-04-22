@@ -11,8 +11,8 @@ FROM eclipse-temurin:21-jre
 WORKDIR /app
 COPY --from=build /app/target/smartparking-app.jar app.jar
 
-# Variáveis de ambiente
-ENV SPRING_DATASOURCE_URL=jdbc:postgresql://smartparking-db:5432/smartparkingdb \
+# Variáveis de ambiente (caso queira rodar standalone sem docker-compose)
+ENV SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/smartparkingdb \
     SPRING_DATASOURCE_USERNAME=postgres \
     SPRING_DATASOURCE_PASSWORD=123456 \
     SPRING_JPA_HIBERNATE_DDL_AUTO=update \
