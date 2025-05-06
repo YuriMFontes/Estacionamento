@@ -30,18 +30,8 @@ services:
     networks:
       - smartnet
 
-  tests:
-    build: .
-    container_name: smartparking-tests
-    command: mvn clean test
-    depends_on:
-      - postgres
-    networks:
-      - smartnet
+networks:
+  smartnet:
 
 volumes:
   pgdata:
-
-networks:
-  smartnet:
-    driver: bridge

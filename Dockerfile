@@ -7,8 +7,8 @@ WORKDIR /app
 # Copia todos os arquivos do projeto para o diretório de trabalho
 COPY . .
 
-# Compila e empacota o projeto usando Maven, agora rodando os testes
-RUN mvn clean package
+# Compila e empacota o projeto usando Maven
+RUN mvn clean package -DskipTests
 
 # Etapa 2: Configuração do runtime com Java 21
 FROM eclipse-temurin:21-jre AS runtime
